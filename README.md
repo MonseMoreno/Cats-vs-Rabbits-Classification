@@ -42,6 +42,9 @@ Se redistribuyó de forma manual la información contenida en el dataset y reali
 ### Escalamiento y Preprocesado de Datos
 Para mejorar el rendimiento y la capacidad de generalización del modelo, se implementaron técnicas de preprocesado utilizando TensorFlow y Keras. 
 
+Las imágenes originales tenían un tamaño de 300x300 píxeles, pero se redimensionaron a 150x150 para poder acelerar el entrenamiento y reducir el uso de memoria (RAM o GPU) además, simplica los cálculos al disminuir la cantidad de píxeles por imagen.
+Igualmente preserva suficiente información visual para tareas de clasificación binaria como en este caso es la distinción entre gatos y conejos, ya que estas clases tienen características fácilmente detectables incluso a menor resolución no hace falta tener una alta resolución para poder distinguir entre ambas especies.
+
 - `rescale = 1./255,` : Convierte los valores de píxeles de [0, 255] a [0, 1]
 - `rotation_range=20`:  Gira aleatoriamente la imagen en un rango de ±20 grados
 - `width_shift_range=0.1`:  Desplaza la imagen horizontalmente hasta un 10%
