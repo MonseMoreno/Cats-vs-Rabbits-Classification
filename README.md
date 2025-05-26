@@ -82,10 +82,8 @@ Además, muchos de los conceptos y herramientas empleados (capas convolucionales
 - [Binary Image Classification Through an Optimal Topology for Convolutional Neural Networks](https://asrjetsjournal.org/index.php/American_Scientific_Journal/article/view/5938)
 
 
-## Arquitectura de una CNN y Modelo
-### Capas de la CNN
-
-#### **¿Qué es una CNN?**
+## Arquitectura de una CNN y Model
+### **¿Qué es una CNN?**
 Una red neuronal convolucional (CNN) es un tipo de red neuronal artificial, especialmente efectiva para el procesamiento y análisis de datos visuales como imágenes y videos. Se basa en el principio de las convoluciones para extraer características de la entrada y luego las usa para realizar tareas como clasificación, detección de objetos, segmentación, entre otras. 
 
 Las CNN están compuestas por tres tipos de capas: 
@@ -94,7 +92,7 @@ Las CNN están compuestas por tres tipos de capas:
 - Capa de agrupación.
 - Capa completamente conectada (relu y salida). 
 
-<img src="assets/Arquitectura_CNN.png" width="400">
+<img src="assets/Arquitectura_CNN.png" width="600">
 
 
 - `Capa convolucional (Conv2D)` :
