@@ -81,6 +81,8 @@ Además, muchos de los conceptos y herramientas empleados (capas convolucionales
 
 - [Binary Image Classification Through an Optimal Topology for Convolutional Neural Networks](https://asrjetsjournal.org/index.php/American_Scientific_Journal/article/view/5938)
 
+- [Multi-CNN models with Pretraining for Binary Classification in Skin Cancer](https://ieeexplore.ieee.org/document/9750709)
+
 
 ## Arquitectura de una CNN y Model
 ### **¿Qué es una CNN?**
@@ -94,6 +96,7 @@ Las CNN están compuestas por tres tipos de capas:
 
 <img src="assets/Arquitectura_CNN.png" width="600">
 
+Se elegió la arquitectura simple de los papers con el accuracy más alto para los modelos binarios, la cual consta de las siguientes capas:
 
 - `Capa convolucional (Conv2D)` :
     - Se define una capa convolucional con 32 filtros de tamaño 3 × 3 y función de activación ReLU.
@@ -105,7 +108,6 @@ Las CNN están compuestas por tres tipos de capas:
     -  Se aplica un MaxPooling con ventana 2 × 2 para reducir la salida de la capa convolucional anterior.
     -  La capa de pooling reduce la dimensionalidad de la imagen al agrupar regiones adyacentes de píxeles y tomar el valor máximo de cada región
     -  Esto ayuda a reducir la cantidad de parámetros y se mantiene la información más relevante para la clasificación.
-
 
 - `Segunda capa convolucional (Conv2D)` :
     - Contiene 64 filtros de tamaño 3 × 3 y activación ReLU.
@@ -122,20 +124,90 @@ Las CNN están compuestas por tres tipos de capas:
     - Identifica patrones aún más complejos.
 
 - `Tercera capa de agrupación (MaxPooling2D)` :
-    -  MaxPooling 2 × 2 reduce nuevamente las dimensiones espaciales.
+    - MaxPooling 2 × 2 reduce nuevamente las dimensiones espaciales.
     - Se mantiene la información más relevante para la clasificación.
-
 
 - `Aplanar salida (Flatten)` :
     - Convierte la salida de las capas convolucionales y de pooling en un vector unidimensional.
     - Prepara los datos para conectarse con las neuronas densas.
 
 - `Capa densa (Dense)` :
-    - Se define primero una capa densa con 512 neuronas y función de activación ReLU.
+    - Se define primero una capa densa con 128 neuronas y función de activación ReLU.
 
 - `Capa de salida (Dense)` :
     - Tiene 1 neurona con activación sigmoide.
     - Devuelve un valor entre 0 y 1 que indica la probabilidad de que la imagen sea de una clase (configuración típica para problemas de clasificación binaria).
 
+- `Dropout (Dropout)` :
+    - Se añade una capa Dropout con tasa 0.3 (30%), que desactiva aleatoriamente el 30% de las neuronas durante el entrenamiento.
+
+Ayuda a prevenir el sobreajuste mejorando la capacidad de generalización del modelo.
 
 ## Resultados y Evaluación del Modelo
+### Selección de métricas
+La selección de métricas tienen como referencia los papers, ya que, son las más adecuadas y comunes para evaluar modelos de clasificación binaria. 
+
+- `Accuracy` : Una métrica para observar cuantas de las predicciones positivas son correctas. Se centra en la calidad de las predicciones positivas del modelo.
+
+- `Precisión` : Indica cuántas de las predicciones positivas fueron realmente correctas.
+
+    _TP / (TP / FP)_
+
+- `Recall` : Mide cuántos de los casos positivos reales fueron correctamente detectados
+
+    _TP / (TP / NP)_
+    _
+- `F1-Score` : Promedio armónico entre precisión y recall; evalúa la eficiencia general del modelo combinando la precision y el recall. 
+
+    _(Precisión * Recall)/(Precisión + Recall)_
+
+- `Support` : Número de muestras reales en cada clase.
+
+    _No es una fórmula, es un conteo simple de instancias por clase_
+
+Finalmente de forma visual se usa una matriz de confusión ya que muestra como se distribuyen las predicciónes correctas e incorrectas en cada clase 
+
+<img src="assets/matriz_confusión.png" width="400">
+
+### Primeros resultados
+
+El modelo fue entrenado durante 15 epocas obteniendo los siguientes resultados: 
+
+**test accuracy: 0.8413**
+
+Posterior a eso se realizó la evaluación del modelo con las métricas mencionadas anteriormente:
+| Clase   | Precisión | Recall | F1-Score | Soporte |
+|---------|-----------|--------|----------|---------|
+| Gato    | 0.78      | 0.78   | 0.78     | 160     |
+| Conejo  | 0.80      | 0.91   | 0.85     | 155     |
+| **Macro avg** | **0.80** | **0.84** | **0.84** | 315     |
+| **Weighted avg** | **0.80** | **0.84** | **0.84** | 315     |
+
+Las metricas indican que el modelo funciona mejor detectando conejos que gatos, ya que tiene mayor recall y F1-score para esa clase. Esto significa que acierta más cuando se trata de reconocer conejos, mientras que comete más errores al clasificar gatos. Las métricas promedio indican que el rendimiento es equilibrado entre ambas clases, y no hay un sesgo fuerte hacia una sola sin embargo puede mejorar en la identificación de gatos que es donde más problemas está teniendo.
+
+#### Matriz de Confusión
+
+Dichas métricas tambien se ven reflejadas en la matriz de confusión
+
+- 124 (Verdaderos Positivos de Gato): El modelo clasificó correctamente 124 imágenes que realmente eran de gato.
+
+- 141 (Verdaderos Positivos de Conejo): Clasificó correctamente 141 imágenes de conejo.
+
+- 36 (Falsos Negativos de Gato): 36 gatos fueron mal clasificados como conejos.
+
+- 14 (Falsos Positivos de Gato): 14 conejos fueron mal clasificados como gatos.
+
+
+<img src="assets/matriz_modelo.png" width="400">
+
+#### Gráficas de test y val
+
+**Accuracy**
+<img src="assets/acc_train_val.png" width="400">
+
+**Loss**
+<img src="assets/loss_train_val.png.png" width="400">
+
+Las gráficas de entrenamiento muestran un comportamiento adecuado del modelo. 
+La precisión tanto en entrenamiento como en validación mejora con el paso de las épocas, lo que indica que el modelo está aprendiendo progresivamente a clasificar correctamente las imágenes. Por otro lado, la gráfica de pérdida muestra una disminución constante en el conjunto de entrenamiento, mientras que la pérdida en validación también tiende a disminuir. Sin embargo, en ambas gráficas se observan fluctuaciones en las métricas de validación que podrían ser señales de overfitting ya que podría estar empezando a ajustarse demasiado a patrones específicos del conjunto de entrenamiento. 
+
