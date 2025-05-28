@@ -206,7 +206,7 @@ Dichas métricas tambien se ven reflejadas en la matriz de confusión
 <img src="assets/acc_train_val.png" width="400">
 
 **Loss**
-<img src="assets/loss_train_val.png.png" width="400">
+<img src="assets/loss_train_val.png" width="400">
 
 Las gráficas de entrenamiento muestran un comportamiento adecuado del modelo. 
 La precisión tanto en entrenamiento como en validación mejora con el paso de las épocas, lo que indica que el modelo está aprendiendo progresivamente a clasificar correctamente las imágenes. Por otro lado, la gráfica de pérdida muestra una disminución constante en el conjunto de entrenamiento, mientras que la pérdida en validación también tiende a disminuir. Sin embargo, en ambas gráficas se observan fluctuaciones en las métricas de validación que podrían ser señales de overfitting ya que podría estar empezando a ajustarse demasiado a patrones específicos del conjunto de entrenamiento. 
