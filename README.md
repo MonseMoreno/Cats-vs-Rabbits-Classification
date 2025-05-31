@@ -237,7 +237,7 @@ Debido al aumento de imagenes se decidió reajustar la arquitectura del modelo C
     - Se agregó una cuarta capa convolucional con 226 filtros para permitir que el modelo capturara patrones más complejos y de mayor nivel jerárquico.
     - Esto ayuda a detectar características más finas que distinguen a los gatos y conejos incluso en contextos visuales más complicados.
 
-***Regularización más agresiva:
+***Regularización más agresiva:***
     - Se aumentó el Dropout final a 0.5, reduciendo la probabilidad de sobreajuste al desactivar el 50% de las neuronas en la etapa densa durante el entrenamiento.
     - Se mantuvo Dropout intermedio (0.2) tras cada capa convolucional para introducir ruido controlado en el aprendizaje.
 
