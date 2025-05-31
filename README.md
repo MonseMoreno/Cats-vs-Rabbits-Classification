@@ -139,9 +139,11 @@ Se elegió la arquitectura simple de los papers con el accuracy más alto para l
     - Devuelve un valor entre 0 y 1 que indica la probabilidad de que la imagen sea de una clase (configuración típica para problemas de clasificación binaria).
 
 - `Dropout (Dropout)` :
-    - Se añade una capa Dropout con tasa 0.3 (30%), que desactiva aleatoriamente el 30% de las neuronas durante el entrenamiento.
+    - Se añade una capa Dropout con tasa 0.5 (50%), que desactiva aleatoriamente el 30% de las neuronas durante el entrenamiento.
 
 Ayuda a prevenir el sobreajuste mejorando la capacidad de generalización del modelo.
+
+Los papers referenciados, entrenan sus modelos entre 10 y 30 épocas, debido a la cantidad de datos utilizada se decidió entranar este primer modelo por 15 epócas. 
 
 ## Resultados y Evaluación del Modelo
 ### Selección de métricas
@@ -210,4 +212,72 @@ Dichas métricas tambien se ven reflejadas en la matriz de confusión
 
 Las gráficas de entrenamiento muestran un comportamiento adecuado del modelo. 
 La precisión tanto en entrenamiento como en validación mejora con el paso de las épocas, lo que indica que el modelo está aprendiendo progresivamente a clasificar correctamente las imágenes. Por otro lado, la gráfica de pérdida muestra una disminución constante en el conjunto de entrenamiento, mientras que la pérdida en validación también tiende a disminuir. Sin embargo, en ambas gráficas se observan fluctuaciones en las métricas de validación que podrían ser señales de overfitting ya que podría estar empezando a ajustarse demasiado a patrones específicos del conjunto de entrenamiento. 
+
+### Refinamiento del modelo
+
+A pesar de que el modelo funciona bastante bien y tiene una buenas respuestas, se notó que el dataset utilizado tiene una variedad de imágenes de conejos en césped pero no hay imágenes de gatos en estos escenarios, por lo que al poner una imagen de un gato sobre césped este suele ser mal clasificado. 
+
+<img src="assets/fail_cat_grass.png" width="400"> <img src="assets/fail_cat_grass2.png" width="400">
+
+Por lo tanto, se realizó un aumento de imágenes al dataset de **conejos en ambientes indoor** y **gatos en ambientes de césped**. Se agregaron 600 imágenes en total manteniendo el equilibrio de 70 - 15- 15. 
+
+ - Entrenamiento: 70%
+    - `Cat:` +200 imágenes
+    - `Rabbit`: +200 imágenes
+- Validación: 15%
+    - `Cat:` +50 imágenes
+    - `Rabbit`: +50 imágenes
+- Prueba: 15%
+    - `Cat:` +50 imágenes
+    - `Rabbit`: +50 imágenes
+
+Debido al aumento de imagenes se decidió reajustar la arquitectura del modelo CNN con el objetivo de mejorar su capacidad de generalización, corregir errores recurrentes relacionados con el fondo de las imágenes y aprovechar la nueva información incorporada.
+
+***Aumento de profundidad de la red:***
+    - Se agregó una cuarta capa convolucional con 226 filtros para permitir que el modelo capturara patrones más complejos y de mayor nivel jerárquico.
+    - Esto ayuda a detectar características más finas que distinguen a los gatos y conejos incluso en contextos visuales más complicados.
+
+***Regularización más agresiva:
+    - Se aumentó el Dropout final a 0.5, reduciendo la probabilidad de sobreajuste al desactivar el 50% de las neuronas en la etapa densa durante el entrenamiento.
+    - Se mantuvo Dropout intermedio (0.2) tras cada capa convolucional para introducir ruido controlado en el aprendizaje.
+
+***Aumento de épocas de entrenamiento:***
+    - Se incrementaron las épocas de entrenamiento de 15 a 50, aprovechando el mayor tamaño del dataset y la mayor capacidad de la arquitectura para aprender sin caer en sobreajuste. 
+
+***Ajuste en técnicas de Data Augmentation:***
+    - Se aumentó el rotation_range de 20° a 30°, incrementando la variabilidad de ángulos de entrada.
+    - Se ajustó el rango de brillo (brightness_range) y el método de relleno (fill_mode='nearest') para manejar mejor los cambios de iluminación y bordes tras transformaciones.
+    - Se disminuyó ligeramente el zoom_range para evitar pérdida excesiva de contexto visual.
+
+Estos ajustes permiten al modelo adaptarse mejor a nuevas imágenes con características visuales distintas a las vistas durante el entrenamiento inicial, mejorando su capacidad de generalización y reduciendo errores sistemáticos relacionados con el fondo o las condiciones visuales.
+
+### Resultados del modelo 
+
+**test accuracy: 0.8545**
+
+
+La matriz de confusión evidencia una mejora significativa en la clasificación de conejos (de 141 a 183 aciertos), mientras que la clasificación de gatos también mejora ligeramente (de 124 a 181 aciertos), aunque siguen siendo la clase más desafiante sin embargo está mejor clasificada.
+
+<img src="assets/matriz_modelo2.png" width="400">
+
+#### Gráficas de test y val
+
+**Accuracy**
+<img src="assets/m2_acc_train_val.png" width="400">
+
+**Loss**
+<img src="m2_assets/loss_train_val.png" width="400">
+
+
+Las gráficas de entrenamiento muestran un comportamiento positivo del modelo.
+La precisión tanto en entrenamiento como en validación mejora de forma constante a lo largo de las 50 épocas, lo que indica que el modelo está aprendiendo progresivamente a clasificar correctamente las imágenes, sin mostrar síntomas severos de sobreajuste.
+
+Por su parte, la gráfica de pérdida muestra una disminución clara en el conjunto de entrenamiento. Aunque la pérdida de validación presenta algunas oscilaciones, mantiene una tendencia general descendente. Las fluctuaciones son esperadas dada la mayor complejidad del modelo y el uso de data augmentation, pero no comprometen el rendimiento general.
+
+Esto significa que las curvas de accuracy y pérdida son más estables y muestran un aprendizaje más prolongado, gracias a las 50 épocas utilizadas y al mayor volumen de datos.
+
+
+Finalmente en conjunto, el segundo modelo representa un avance significativo tanto en precisión como en capacidad de generalización, y se adapta mejor a condiciones visuales diversas, cumpliendo los objetivos propuestos para el refinamiento, por lo que ya es capaz de identificar a gatos en ambientes de pasto, más complejos y de mayor precisión. 
+
+<img src="assets/win_cat_grass.png" width="400"> <img src="assets/win_cat_grass2.png" width="400">
 
