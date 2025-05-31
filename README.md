@@ -266,7 +266,7 @@ La matriz de confusión evidencia una mejora significativa en la clasificación 
 <img src="assets/m2_acc_train_val.png" width="400">
 
 **Loss**
-<img src="m2_assets/loss_train_val.png" width="400">
+<img src="assets/m2_loss_train_val.png" width="400">
 
 
 Las gráficas de entrenamiento muestran un comportamiento positivo del modelo.
