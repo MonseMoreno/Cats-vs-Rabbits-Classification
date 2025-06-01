@@ -139,7 +139,7 @@ Se elegió la arquitectura simple de los papers con el accuracy más alto para l
     - Devuelve un valor entre 0 y 1 que indica la probabilidad de que la imagen sea de una clase (configuración típica para problemas de clasificación binaria).
 
 - `Dropout (Dropout)` :
-    - Se añade una capa Dropout con tasa 0.5 (50%), que desactiva aleatoriamente el 30% de las neuronas durante el entrenamiento.
+    - Se añade una capa Dropout con tasa 0.3 (30%), que desactiva aleatoriamente el 30% de las neuronas durante el entrenamiento.
 
 Ayuda a prevenir el sobreajuste mejorando la capacidad de generalización del modelo.
 
@@ -197,7 +197,7 @@ Dichas métricas tambien se ven reflejadas en la matriz de confusión
 
 - 36 (Falsos Negativos de Gato): 36 gatos fueron mal clasificados como conejos.
 
-- 14 (Falsos Positivos de Gato): 14 conejos fueron mal clasificados como gatos.
+- 14 (Falsos Positivos de Conejo): 14 conejos fueron mal clasificados como gatos.
 
 
 <img src="assets/matriz_modelo.png" width="400">
